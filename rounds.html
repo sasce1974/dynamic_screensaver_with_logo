@@ -1,0 +1,110 @@
+<!DOCTYPE HTML>
+<html lang="en">
+<head>
+    <title>Rounds</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/all.min.css" rel="stylesheet">
+    <style type="text/css">
+        body{
+            text-align:center; background-color:black; overflow:hidden; transition: all 3s linear;
+            padding:0; margin:0; perspective:1000px;
+        }
+        #text {
+            text-align:left; color:grey; font-size:small;
+        }
+        #rounds_field{
+            position:relative; width:100%; height:100vh;
+        }
+        .bacRound{
+            position:absolute; opacity:0; border-radius:50%; background:blue;
+            background: radial-gradient(circle, rgba(34,193,195,1) 0%, rgba(0,0,0,1)100%);
+            z-index:100;transition:all ease 2s;
+        }
+        .visible{ opacity: 1;}
+        #logo{
+            position:absolute; top:calc(50vh - 112px); left:calc(50% - 125px); z-index:102;
+            width:250px; height:auto; transition: all ease 4s;
+        }
+    </style>
+</head>
+<body onload="startGame()">
+    <div id="rounds_field"></div>
+    <img id="logo" src="logo.png" width="250px" height="auto" alt="logo">
+    <!--<span id="logo"><i class="fas fa-biohazard fa-4x" style="font-size: 4rem; color: #5f5;"></i></span>-->
+
+    <script>
+        var body = document.body;
+        var xMax = window.innerWidth;
+        var yMax = window.innerHeight;
+
+        window.onresize = function () {
+            xMax = window.innerWidth;
+            yMax = window.innerHeight;
+        };
+        function rgb (){
+            return Math.round(255 * Math.random());
+        }
+        //Return random rgb color or random radial gradient color if parameter 'a' is 1
+        function randomColor(a) {
+            let color;
+            var red = rgb();
+            var green = rgb();
+            var blue = rgb();
+            if(a === 1){
+                color = "radial-gradient(circle, rgba(" + red + "," + green + "," + blue + ", 1) 0%, rgba(0,0,0,0)100%)";
+            }else{
+                color = "rgb(" + red + "," + green + "," + blue + ")";
+                body.style.backgroundColor = color;
+            }
+            return color;
+        }
+
+        var rounds = "", roundTop = 0, roundLeft = 0, diameter = 20;
+        var roundField = document.getElementById('rounds_field');
+        roundField.innerHTML = "";
+
+        function showRounds() {
+            roundTop = Math.floor(Math.random() * yMax);
+            roundLeft = Math.floor(Math.random() * xMax);
+            diameter = Math.floor(Math.random() * 1000) + 50;
+            roundTop = roundTop - (diameter/2);
+            roundLeft = roundLeft - (diameter/2);
+
+            rounds = "<span class='bacRound' style='top:" + roundTop + "px; left:" + roundLeft +
+                    "px; width:" + diameter + "px; height:" + diameter + "px; background:" +
+                    randomColor(1) + "'></span>";
+
+            roundField.innerHTML += rounds;
+
+            setTimeout(function () {
+                roundField.lastElementChild.classList.add('visible');
+            }, 500);
+
+            if(roundField.childElementCount > 20){
+                setTimeout(function () {
+                    roundField.firstElementChild.classList.remove('visible');
+                }, 500);
+                roundField.removeChild(roundField.firstElementChild);
+            }
+        }// End of function showRounds
+
+        var counter = 1;
+        function turnLogo(){
+            var logo = document.getElementById('logo');
+            if(counter === 1){
+                logo.style.transform = "rotateY(360deg)";
+                counter = 0;
+            }else{
+                logo.style.transform = "rotateY(0deg)";
+                counter = 1;
+            }
+        }
+
+        function startGame() {
+            setInterval(randomColor, 5000);
+            setInterval(showRounds, 2000);
+            setInterval(turnLogo, 6000);
+        }
+    </script>
+</body>
+</html>
